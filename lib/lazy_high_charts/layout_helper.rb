@@ -81,6 +81,22 @@ module LazyHighCharts
     def generate_json_from_hash hash
       hash.to_json
     end
+
+    def generate_json_from_value value		
+      if value.is_a? Hash		
+        %|{ #{generate_json_from_hash value} }|		
+      elsif value.is_a? Array		
+        %|[ #{generate_json_from_array value} ]|		
+      elsif value.respond_to?(:js_code) && value.js_code?		
+        value		
+      else		
+        value.to_json		
+      end		
+    end		
+		
+    def generate_json_from_array array		
+      array.map { |value| generate_json_from_value(value) }.join(",")		
+    end		
   end
 end
 
